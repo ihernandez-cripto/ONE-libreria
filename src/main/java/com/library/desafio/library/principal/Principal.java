@@ -5,19 +5,18 @@ package com.library.desafio.library.principal;
 import com.library.desafio.library.model.Datos;
 import com.library.desafio.library.model.DatosAutor;
 import com.library.desafio.library.model.DatosLibros;
+import com.library.desafio.library.model.Libro;
 import com.library.desafio.library.service.ConsumoAPI;
 import com.library.desafio.library.service.ConvierteDatos;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Principal {
     private  static  final  String URL_BASE = "https://gutendex.com/books/";
     private ConsumoAPI consumoAPI = new ConsumoAPI();
     private ConvierteDatos conversor = new ConvierteDatos();
+    private List<DatosLibros> datosLibros = new ArrayList<DatosLibros>();
 
     public void  muestraMenu(){
         var opcion = -1;
@@ -35,10 +34,10 @@ public class Principal {
             opcion = teclado.nextInt();
             switch (opcion) {
                 case 1:
-                    buscarLibroWeb();
+                    registroLibro();
                     break;
                 case 2:
-//                    libroRegistrado();
+                    libroRegistrado();
                     break;
                 case 3:
 //                    listarAutores();
@@ -60,7 +59,7 @@ public class Principal {
     }
 
     // Busqueda de libros por titulo
-    private void buscarLibroWeb() {
+    private DatosLibros buscarLibroWeb() {
         var teclado = new Scanner(System.in);
         System.out.println("Ingrese el nombre del libro que desea buscar");
         var tituloLibro = teclado.nextLine();
@@ -71,6 +70,7 @@ public class Principal {
                 .filter(l -> l.titulo().toUpperCase().contains(tituloLibro.toUpperCase()))
                 .findFirst();
         if(libroBuscado.isPresent()){
+
             List<String> escritor = libroBuscado.get().autor().stream()
                     .map(DatosAutor::nombre)
                     .toList();
@@ -82,10 +82,27 @@ public class Principal {
             System.out.println("---------------------- ");
         }else {
             System.out.println("libro no encontrado");
+            muestraMenu();
         }
+        DatosLibros libroEncontrado = datosBusqueda.resultados().get(0);
+        return libroEncontrado ;
     }
 
+    private void registroLibro() {
+        DatosLibros optionalDatosLibros = buscarLibroWeb();
+        datosLibros.add(optionalDatosLibros);
+        System.out.println(optionalDatosLibros);
+    }
 
+    private void libroRegistrado() {
+   //    datosLibros.forEach(System.out::println);
+        List<Libro> libros = new ArrayList<>();
+        libros = datosLibros.stream()
+                .map(d -> new Libro(d))
+                .collect(Collectors.toList());
+        libros.stream()
+                .forEach(System.out::println);
+    }
 
 
 //        var json = consumoAPI.obtenerDatos(URL_BASE);
