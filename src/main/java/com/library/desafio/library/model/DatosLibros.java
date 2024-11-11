@@ -2,7 +2,6 @@ package com.library.desafio.library.model;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.library.desafio.library.model.DatosAutor;
 
 import java.util.List;
 

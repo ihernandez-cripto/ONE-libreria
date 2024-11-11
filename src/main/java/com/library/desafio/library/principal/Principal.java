@@ -1,11 +1,6 @@
 package com.library.desafio.library.principal;
 
-
-
-import com.library.desafio.library.model.Datos;
-import com.library.desafio.library.model.DatosAutor;
-import com.library.desafio.library.model.DatosLibros;
-import com.library.desafio.library.model.Libro;
+import com.library.desafio.library.model.*;
 import com.library.desafio.library.service.ConsumoAPI;
 import com.library.desafio.library.service.ConvierteDatos;
 
@@ -16,7 +11,10 @@ public class Principal {
     private  static  final  String URL_BASE = "https://gutendex.com/books/";
     private ConsumoAPI consumoAPI = new ConsumoAPI();
     private ConvierteDatos conversor = new ConvierteDatos();
-    private List<DatosLibros> datosLibros = new ArrayList<DatosLibros>();
+    private List<DatosLibros> datosLibros = new ArrayList<>();
+    private List<DatosAutor> datosAutor = new ArrayList<>();
+    private List<DatosAutor> escritores = new ArrayList<>();
+    private  String nombreEscritor;
 
     public void  muestraMenu(){
         var opcion = -1;
@@ -40,16 +38,16 @@ public class Principal {
                     libroRegistrado();
                     break;
                 case 3:
-//                    listarAutores();
+                    autorRegistrado();
                     break;
                 case 4:
-//                    autoresAno();
+                    consultarAutoresVivos();
                     break;
                 case 5:
-//                    librosIdioma();
+                    mostrarlibrosIdioma();
                     break;
                 case 0:
-                    System.out.println("Saliendo de la aplicación...");;
+                    System.out.println("Saliendo de la aplicación...");
                     break;
                 default:
                     System.out.println("Opción no valida");
@@ -59,76 +57,86 @@ public class Principal {
     }
 
     // Busqueda de libros por titulo
-    private DatosLibros buscarLibroWeb() {
+    private Optional<DatosLibros> buscarLibroWeb() {
         var teclado = new Scanner(System.in);
         System.out.println("Ingrese el nombre del libro que desea buscar");
         var tituloLibro = teclado.nextLine();
         var json = consumoAPI.obtenerDatos(URL_BASE+"?search=" + tituloLibro.replace(" ", "+"));
         var datosBusqueda = conversor.obtenerDatos(json, Datos.class);
-
+        // Seleccionar el primer libro de la respuesta a la solicitud del usuario
         Optional<DatosLibros> libroBuscado = datosBusqueda.resultados().stream()
                 .filter(l -> l.titulo().toUpperCase().contains(tituloLibro.toUpperCase()))
                 .findFirst();
-        if(libroBuscado.isPresent()){
-
-            List<String> escritor = libroBuscado.get().autor().stream()
-                    .map(DatosAutor::nombre)
-                    .toList();
+        return libroBuscado ;
+    }
+    // Agregar el libro a la lista de libros consultados y mostrar informacion en pantalla
+    private void registroLibro() {
+        Optional<DatosLibros> libroOpcional =buscarLibroWeb();
+        libroOpcional.ifPresent(libro -> {
+            datosLibros.add(libro);
+            libro.autor().stream()
+                    .filter(Objects::nonNull) // Filtrar autores nulos
+                    .findFirst()
+                    .ifPresent(autor -> {
+                        datosAutor.add(autor); // Agregar el Autor a la lista
+                        nombreEscritor = autor.nombre();
+                    });
             System.out.println("------- LIBRO ------- ");
-            System.out.println("Titulo: " + libroBuscado.get().titulo());
-            System.out.println("Autor: " + escritor);
-            System.out.println("Idioma: " + libroBuscado.get().idiomas());
-            System.out.println("Número de descargas: " + libroBuscado.get().numeroDescargas());
+            System.out.println("Titulo: " + libro.titulo());
+            System.out.println("Autor: " + nombreEscritor);
+            System.out.println("Idioma: " + libro.idiomas());
+            System.out.println("Número de descargas: " + libro.numeroDescargas());
             System.out.println("---------------------- ");
-        }else {
-            System.out.println("libro no encontrado");
-            muestraMenu();
-        }
-        DatosLibros libroEncontrado = datosBusqueda.resultados().get(0);
-        return libroEncontrado ;
+        });
+     }
+
+    private List<Libro> convertirADatosLibros(List<DatosLibros> datosLibros) {
+        return datosLibros.stream()
+                .map(Libro::new)
+                .collect(Collectors.toList());
     }
 
-    private void registroLibro() {
-        DatosLibros optionalDatosLibros = buscarLibroWeb();
-        datosLibros.add(optionalDatosLibros);
-        System.out.println(optionalDatosLibros);
+    private List<Autor> convertirADatosAutores(List<DatosAutor> datosAutor) {
+        return datosAutor.stream()
+                .map(Autor::new)
+                .collect(Collectors.toList());
+    }
+
+    private void imprimirLibros(List<Libro> libros) {
+        libros.forEach(System.out::println);
+    }
+
+    private void imprimirAutores(List<Autor> autores) {
+        autores.forEach(System.out::println);
     }
 
     private void libroRegistrado() {
-   //    datosLibros.forEach(System.out::println);
-        List<Libro> libros = new ArrayList<>();
-        libros = datosLibros.stream()
-                .map(d -> new Libro(d))
-                .collect(Collectors.toList());
-        libros.stream()
+        List<Libro> libros = convertirADatosLibros(datosLibros);
+        imprimirLibros(libros);
+    }
+
+    private void autorRegistrado() {
+        List<Autor> autores = convertirADatosAutores(datosAutor);
+        imprimirAutores(autores);
+    }
+
+    private void consultarAutoresVivos() {
+        var teclado = new Scanner(System.in);
+        System.out.println("Ingrese el año de nacimiento del autor que desea buscar buscar");
+        var fechabuscar = teclado.nextInt();
+        List<Autor> escritores = convertirADatosAutores(datosAutor);
+        escritores.stream()
+                .filter(e -> {
+                    Integer anoNacimiento = e.getFechaNacimiento();
+                    return anoNacimiento != null && anoNacimiento == fechabuscar;
+                })
                 .forEach(System.out::println);
     }
 
-
-//        var json = consumoAPI.obtenerDatos(URL_BASE);
-//        System.out.println(json);
-//        var datos = conversor.obtenerDatos(json, Datos.class);
-//        System.out.println(datos);
-
-        // Top 10 libros mas descargados
-//        System.out.println("Top 10 libros mas descargados");
-//        datos.resultados().stream()
-//                .sorted(Comparator.comparing(DatosLibros::numeroDescargas).reversed())
- //               .limit(10)
-//                .map(l -> l.titulo().toUpperCase())
- //               .forEach(System.out::println);
-
-
-
-
-        // trabajando con estadisticas
-//        DoubleSummaryStatistics est = datos.resultados().stream()
-//                .filter(d -> d.numeroDescargas() > 0)
-//                .collect(Collectors.summarizingDouble(DatosLibros::numeroDescargas));
-//        System.out.println("La media de descargas es: " + est.getAverage());
-//        System.out.println("Cantidad maxima de descargas: " + est.getMax());
-//        System.out.println("Cantidad minima de descargas: " + est.getMin());
-//        System.out.println("Total de registros evaluados en el calculo de estadisticas: " + est.getCount());
-
-
+    private void mostrarlibrosIdioma() {
+        List<Libro> libros = convertirADatosLibros(datosLibros);
+        libros.stream()
+                .sorted(Comparator.comparing(Libro::getIdiomas).reversed())
+                .forEach(System.out::println);
+    }
 }

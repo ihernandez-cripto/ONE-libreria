@@ -1,7 +1,6 @@
 package com.library.desafio.library.model;
 
 import java.util.List;
-import java.util.Optional;
 
 public class Libro {
     private String titulo;

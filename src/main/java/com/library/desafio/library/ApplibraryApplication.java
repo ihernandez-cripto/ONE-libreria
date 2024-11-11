@@ -7,7 +7,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ApplibraryApplication implements CommandLineRunner {
+public class
+ApplibraryApplication implements CommandLineRunner {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ApplibraryApplication.class, args);
