@@ -13,7 +13,8 @@ public class Principal {
     private ConvierteDatos conversor = new ConvierteDatos();
     private List<DatosLibros> datosLibros = new ArrayList<>();
     private List<DatosAutor> datosAutor = new ArrayList<>();
-    private List<DatosAutor> escritores = new ArrayList<>();
+    private List<Libro> libros = new ArrayList<>();
+    private List<Autor> escritores = new ArrayList<>();
     private  String nombreEscritor;
 
     public void  muestraMenu(){
@@ -116,15 +117,15 @@ public class Principal {
     }
 
     private void autorRegistrado() {
-        List<Autor> autores = convertirADatosAutores(datosAutor);
-        imprimirAutores(autores);
+        escritores = convertirADatosAutores(datosAutor);
+        imprimirAutores(escritores);
     }
 
     private void consultarAutoresVivos() {
         var teclado = new Scanner(System.in);
         System.out.println("Ingrese el año de nacimiento del autor que desea buscar buscar");
         var fechabuscar = teclado.nextInt();
-        List<Autor> escritores = convertirADatosAutores(datosAutor);
+        escritores = convertirADatosAutores(datosAutor);
         escritores.stream()
                 .filter(e -> {
                     Integer anoNacimiento = e.getFechaNacimiento();
@@ -134,7 +135,7 @@ public class Principal {
     }
 
     private void mostrarlibrosIdioma() {
-        List<Libro> libros = convertirADatosLibros(datosLibros);
+        libros = convertirADatosLibros(datosLibros);
         libros.stream()
                 .sorted(Comparator.comparing(Libro::getIdiomas).reversed())
                 .forEach(System.out::println);

@@ -1,7 +1,6 @@
 package com.library.desafio.library.model;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 public enum Catalogo {
 // ISO 639 Languages
