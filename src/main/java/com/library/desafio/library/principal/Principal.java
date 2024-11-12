@@ -15,7 +15,6 @@ public class Principal {
     private List<DatosAutor> datosAutor = new ArrayList<>();
     private List<Libro> libros = new ArrayList<>();
     private List<Autor> escritores = new ArrayList<>();
-    private  String nombreEscritor;
 
     public void  muestraMenu(){
         var opcion = -1;
@@ -80,16 +79,16 @@ public class Principal {
                     .findFirst()
                     .ifPresent(autor -> {
                         datosAutor.add(autor); // Agregar el Autor a la lista
-                        nombreEscritor = autor.nombre();
                     });
+            libros = convertirADatosLibros(datosLibros);
             System.out.println("------- LIBRO ------- ");
-            System.out.println("Titulo: " + libro.titulo());
-            System.out.println("Autor: " + nombreEscritor);
-            System.out.println("Idioma: " + libro.idiomas());
-            System.out.println("Número de descargas: " + libro.numeroDescargas());
+            System.out.println("Titulo: " + libros.get(0).getTitulo());
+            System.out.println("Autor: " + libros.get(0).getAutor().get(0).nombre());
+            System.out.println("Idioma: " + libros.get(0).getIdiomas());
+            System.out.println("Número de descargas: " + libros.get(0).getNumeroDescargas());
             System.out.println("---------------------- ");
         });
-     }
+    }
 
     private List<Libro> convertirADatosLibros(List<DatosLibros> datosLibros) {
         return datosLibros.stream()
@@ -112,7 +111,7 @@ public class Principal {
     }
 
     private void libroRegistrado() {
-        List<Libro> libros = convertirADatosLibros(datosLibros);
+        libros = convertirADatosLibros(datosLibros);
         imprimirLibros(libros);
     }
 
