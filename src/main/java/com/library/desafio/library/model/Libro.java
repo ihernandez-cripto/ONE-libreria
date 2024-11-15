@@ -2,7 +2,6 @@ package com.library.desafio.library.model;
 
 import jakarta.persistence.*;
 
-import java.util.List;
 import java.util.OptionalDouble;
 
 @Entity

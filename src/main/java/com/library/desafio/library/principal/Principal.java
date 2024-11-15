@@ -142,12 +142,11 @@ public class Principal {
     }
 
     public void imprimirInformacionLibro(DatosLibros libro) {
-        DatosLibros librodb = libro;
             System.out.println("------- LIBRO ------- ");
-            System.out.println("Título: " + librodb.titulo());
-            System.out.println("Autor: " + librodb.autor().get(0).nombre());
-            System.out.println("Idioma: " + librodb.idiomas());
-            System.out.println("Número de descargas: " + librodb.numeroDescargas());
+            System.out.println("Título: " + libro.titulo());
+            System.out.println("Autor: " + libro.autor().get(0).nombre());
+            System.out.println("Idioma: " + libro.idiomas());
+            System.out.println("Número de descargas: " + libro.numeroDescargas());
             System.out.println("---------------------- ");
     }
 }
