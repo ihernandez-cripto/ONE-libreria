@@ -14,6 +14,9 @@ public enum Catalogo {
     ALEMAN("de"),
     DANES("da"),
     GRIEGO("el"),
+    FLAMENCO("nl"),
+    POLACO("pl"),
+    FINLANDES("fi"),
     TAGALOG("tl");
 
     private String catalogoOmdb;

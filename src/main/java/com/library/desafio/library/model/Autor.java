@@ -7,7 +7,6 @@ import java.util.List;
 @Entity
 public class Autor {
     @Id
-    @Column(name = "id_autor")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
     @Column(unique = true)
@@ -16,21 +15,28 @@ public class Autor {
     private Integer fechaNacimiento;
     @Column(name = "fecha_muerte")
     private Integer fechaMuerte;
-    @OneToMany(mappedBy = "autor")
-    private List<Libro> libros;
 
     public Autor(){}
 
     public Autor(DatosAutor datosAutor) {
-        this.nombre = datosAutor.nombre();
-        this.fechaNacimiento = datosAutor.fechaNacimiento();
-        this.fechaMuerte = datosAutor.fechaMuerte();
+       this.nombre = datosAutor.nombre();
+       try{
+           this.fechaNacimiento = Integer.valueOf(datosAutor.fechaNacimiento());
+       } catch (NumberFormatException e){
+           this.fechaNacimiento = 0;
+       }
+       try{
+           this.fechaMuerte = Integer.valueOf(datosAutor.fechaMuerte());
+       } catch (NumberFormatException e){
+           this.fechaMuerte = 0;
+       }
     }
 
     @Override
     public String toString() {
         return
-                "nombre='" + nombre + '\'' +
+                "nombre=" + nombre + '\'' +
+                        "nombre='" + nombre + '\'' +
                         ", fechaNacimiento=" + fechaNacimiento +
                         ", fechaMuerte=" + fechaMuerte ;
     }
