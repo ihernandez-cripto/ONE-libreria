@@ -12,7 +12,6 @@ public class Libro {
     @Column(unique = true)
     private String titulo;
     @ManyToOne()
-    @JoinColumn(name = "id_autor")
     private Autor autor;
     @Enumerated(EnumType.STRING)
     private Catalogo idiomas;
