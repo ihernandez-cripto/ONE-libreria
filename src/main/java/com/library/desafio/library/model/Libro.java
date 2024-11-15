@@ -1,28 +1,48 @@
 package com.library.desafio.library.model;
 
-import java.util.List;
+import jakarta.persistence.*;
 
+import java.util.List;
+import java.util.OptionalDouble;
+
+@Entity
 public class Libro {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long Id;
+    @Column(unique = true)
     private String titulo;
-    private List<DatosAutor> autor;
+    @ManyToOne()
+    @JoinColumn(name = "id_autor")
+    private Autor autor;
+    @Enumerated(EnumType.STRING)
     private Catalogo idiomas;
     private Double numeroDescargas;
 
+    public Libro(){}
+
     public Libro(DatosLibros datosLibros){
         this.titulo = datosLibros.titulo();
-        this.autor = datosLibros.autor();
         this.idiomas = Catalogo.fromString(datosLibros.idiomas());
-        this.numeroDescargas = datosLibros.numeroDescargas();
+        this.numeroDescargas = OptionalDouble.of(Double.valueOf(datosLibros.numeroDescargas())).orElse(0);
     }
 
     @Override
     public String toString() {
         return
-                "titulo='" + titulo + '\'' +
+                "Id=" + Id +
+                ", titulo='" + titulo + '\'' +
                 ", autor=" + autor +
                 ", idiomas=" + idiomas +
-                ", numeroDescargas=" + numeroDescargas
-                ;
+                ", numeroDescargas=" + numeroDescargas;
+    }
+
+    public long getId() {
+        return Id;
+    }
+
+    public void setId(long id) {
+        Id = id;
     }
 
     public String getTitulo() {
@@ -33,11 +53,11 @@ public class Libro {
         this.titulo = titulo;
     }
 
-    public List<DatosAutor> getAutor() {
+    public Autor getAutor() {
         return autor;
     }
 
-    public void setAutor(List<DatosAutor> autor) {
+    public void setAutor(Autor autor) {
         this.autor = autor;
     }
 
@@ -56,4 +76,5 @@ public class Libro {
     public void setNumeroDescargas(Double numeroDescargas) {
         this.numeroDescargas = numeroDescargas;
     }
+
 }

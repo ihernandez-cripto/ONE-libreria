@@ -1,9 +1,25 @@
 package com.library.desafio.library.model;
 
+import jakarta.persistence.*;
+
+import java.util.List;
+
+@Entity
 public class Autor {
+    @Id
+    @Column(name = "id_autor")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long Id;
+    @Column(unique = true)
     private String nombre;
+    @Column(name = "fecha_nacimiento")
     private Integer fechaNacimiento;
+    @Column(name = "fecha_muerte")
     private Integer fechaMuerte;
+    @OneToMany(mappedBy = "autor")
+    private List<Libro> libros;
+
+    public Autor(){}
 
     public Autor(DatosAutor datosAutor) {
         this.nombre = datosAutor.nombre();
@@ -15,8 +31,8 @@ public class Autor {
     public String toString() {
         return
                 "nombre='" + nombre + '\'' +
-                ", fechaNacimiento=" + fechaNacimiento +
-                ", fechaMuerte=" + fechaMuerte ;
+                        ", fechaNacimiento=" + fechaNacimiento +
+                        ", fechaMuerte=" + fechaMuerte ;
     }
 
     public String getNombre() {
@@ -42,5 +58,4 @@ public class Autor {
     public void setFechaMuerte(Integer fechaMuerte) {
         this.fechaMuerte = fechaMuerte;
     }
-
 }
